@@ -47,13 +47,11 @@ const AppLayout: React.FC = () => {
               key: "1",
               icon: <HomeFilled />,
               label: <Link to={"/"}>Trang chủ</Link>,
-              link: "/",
             },
             {
               key: "2",
               icon: <UserOutlined />,
               label: <Link to={"/users"}>Quản lý tài khoản</Link>,
-              link: "/users",
             },
           ]}
         />
@@ -94,10 +92,11 @@ const AppLayout: React.FC = () => {
           style={{
             margin: "24px 16px",
             padding: 24,
-            minHeight: 550,
+
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
+          className="h-full min-h-screen"
         >
           <Outlet />
         </Content>
