@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use('/api/auth', require('./routes/auth.route'));
-app.use('/api/users', require('./routes/user.route'));
-app.use('/api/order', require('./routes/order.route'));
+// app.use('/api/users', require('./routes/user.route'));
+// app.use('/api/order', require('./routes/order.route'));
 
 
 app.get('/api', function (req, res) {

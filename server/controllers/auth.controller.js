@@ -4,8 +4,8 @@ var jwt = require('jsonwebtoken');
 
 exports.register = async function (req, res) {
     try {
-        const { username, email, password } = req.body;
-        if (!username || !email || !password) {
+        const { email, password } = req.body;
+        if (!email || !password) {
             return res.status(400).json({ message: 'Hãy điền đầy đủ thông tin' });
         }
         // Check if user already exists
@@ -63,7 +63,7 @@ exports.login = async function (req, res) {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'none'
             });
-            return res.status(200).json({ message: 'Đăng nhập thành công', token: token, user: { id: results[0].id, username: results[0].username, email: results[0].email, Coins: results[0].Coins, role: results[0].role } });
+            return res.status(200).json({ message: 'Đăng nhập thành công', token: token, user: { id: results[0].id, email: results[0].email, role: results[0].role } });
         });
     } catch (error) {
         console.log(error);
