@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
+import AxiosConfig from "../configs/axiosClient";
 
 const RegisterSchema = z.object({
   remail: z.string().email({ message: "email không hợp lệ" }),
@@ -38,13 +39,33 @@ const RegisterModal: React.FC = () => {
   };
 
   const onRegister = (data: RegisterSchemaType) => {
-    Swal.fire({
-      title: "Đăng ký thành công!",
-      icon: "success",
-    });
-    reset();
-    setIsModalOpen(false);
-    console.log(data);
+    AxiosConfig.post("/auth/register", {
+      email: data.remail,
+      password: data.rpassword,
+    })
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          setIsModalOpen(false);
+          reset();
+          return Swal.fire({
+            text: res.data.message,
+            icon: "success",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.status == 400) {
+          return Swal.fire({
+            text: err.response.data.message,
+            icon: "error",
+          });
+        }
+        return Swal.fire({
+          text: "có lỗi xảy ra",
+          icon: "error",
+        });
+      });
   };
 
   return (
@@ -78,7 +99,7 @@ const RegisterModal: React.FC = () => {
         >
           <input
             {...register("remail")}
-            type="text"
+            type="email"
             placeholder="email"
             className="p-2 rounded-lg ring-2"
           />

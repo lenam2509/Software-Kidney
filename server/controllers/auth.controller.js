@@ -20,7 +20,7 @@ exports.register = async function (req, res) {
             // Encrypt the password
             const hashedPassword = await bcrypt.hash(password, 8);
             // Insert user into database
-            db.query('INSERT INTO users SET ?', { username: username, email: email, password: hashedPassword }, function (error, results) {
+            db.query('INSERT INTO users SET ?', { email: email, password: hashedPassword }, function (error, results) {
                 if (error) {
                     console.log(error);
                     return res.status(500).json({ message: 'Internal server error' });
