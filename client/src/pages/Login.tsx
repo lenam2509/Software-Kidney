@@ -7,8 +7,9 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import RegisterModal from "../components/RegisterModal";
 import AxiosConfig from "../configs/axiosClient";
-import { useDispatch } from "react-redux";
+
 import { login } from "../redux/reducers/authSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "email không hợp lệ" }),
@@ -22,7 +23,7 @@ type LoginSchemaType = z.infer<typeof LoginSchema>;
 
 export default function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,

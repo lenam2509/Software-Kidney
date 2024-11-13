@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HomeFilled,
   LogoutOutlined,
@@ -20,19 +20,26 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import AxiosConfig from "../configs/axiosClient";
 import Swal from "sweetalert2";
 
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { logout } from "../redux/reducers/authSlice";
+
 const { Header, Sider, Content } = Layout;
 
 const AppLayout: React.FC = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const logout = () => {
+  const Logout = () => {
     AxiosConfig.get("/auth/logout")
       .then((res) => {
         if (res.status == 200 || res.status == 201) {
+          dispatch(logout());
           navigate("/login");
           return Swal.fire({
             text: res.data.message,
@@ -46,11 +53,22 @@ const AppLayout: React.FC = () => {
   const AvatarItems: MenuProps["items"] = [
     {
       key: 1,
-      label: <span onClick={logout}>Đăng xuất</span>,
+      label: <span onClick={Logout}>Đăng xuất</span>,
       icon: <LogoutOutlined />,
       danger: true,
     },
   ];
+
+  useEffect(() => {
+    if (!isAuth || !localStorage.getItem("persist:auth")) {
+      Swal.fire({
+        text: "bạn cần đăng nhập",
+        icon: "error",
+      });
+      return navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
@@ -95,7 +113,7 @@ const AppLayout: React.FC = () => {
           />
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Typography.Text type="success" strong={true}>
-              user1@gmail.com
+              {user.email}
             </Typography.Text>
             <Dropdown menu={{ items: AvatarItems }}>
               <Avatar
