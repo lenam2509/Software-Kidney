@@ -49,11 +49,11 @@ exports.login = async function (req, res) {
                 return res.status(500).json({ message: 'Internal server error' });
             }
             if (results.length == 0) {
-                return res.status(400).json({ message: 'Email không tồn tại' });
+                return res.status(400).json({ message: 'Email hoặc mật khẩu sai' });
             }
             // Check if password is correct
             if (!bcrypt.compareSync(password, results[0].password)) {
-                return res.status(400).json({ message: 'Mật khẩu không đúng' });
+                return res.status(400).json({ message: 'Email hoặc mật khẩu sai' });
             }
             // Create token
             const token = jwt.sign({ id: results[0].id }, process.env.JWT_SECRET, { expiresIn: '1d' });

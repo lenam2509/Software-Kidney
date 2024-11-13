@@ -16,20 +16,37 @@ import {
   theme,
   Typography,
 } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import AxiosConfig from "../configs/axiosClient";
+import Swal from "sweetalert2";
 
 const { Header, Sider, Content } = Layout;
 
 const AppLayout: React.FC = () => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const logout = () => {
+    AxiosConfig.get("/auth/logout")
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          navigate("/login");
+          return Swal.fire({
+            text: res.data.message,
+            icon: "success",
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const AvatarItems: MenuProps["items"] = [
     {
       key: 1,
-      label: <Link to={"/login"}>Đăng xuất</Link>,
+      label: <span onClick={logout}>Đăng xuất</span>,
       icon: <LogoutOutlined />,
       danger: true,
     },

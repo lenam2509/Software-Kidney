@@ -6,6 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import RegisterModal from "../components/RegisterModal";
+import AxiosConfig from "../configs/axiosClient";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/reducers/authSlice";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "email không hợp lệ" }),
@@ -19,6 +22,7 @@ type LoginSchemaType = z.infer<typeof LoginSchema>;
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -26,19 +30,45 @@ export default function Login() {
   } = useForm<LoginSchemaType>({ resolver: zodResolver(LoginSchema) });
 
   const onsubmit = (data: z.infer<typeof LoginSchema>) => {
-    Swal.fire({
-      title: "Đăng nhập thành công!",
-      icon: "success",
-    });
-    console.log(data);
-    navigate("/");
+    AxiosConfig.post("/auth/login", {
+      email: data.email,
+      password: data.password,
+    })
+      .then((res) => {
+        if (res.status == 200 || res.status == 201) {
+          dispatch(login(res.data));
+          navigate("/");
+          return Swal.fire({
+            text: res.data.message,
+            icon: "success",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.status == 400) {
+          return Swal.fire({
+            text: err.response.data.message,
+            icon: "error",
+          });
+        }
+        return Swal.fire({
+          text: "có lỗi xảy ra",
+          icon: "error",
+        });
+      });
   };
 
   return (
     <div className="md:flex md:flex-row flex flex-col h-screen">
-      <div className="md:w-3/4 w-full bg-slate-200/50">
-        <img src="" alt="" />
+      <div className="md:w-3/4 w-full bg-slate-200/50  border-r border-r-blue-300">
+        <img
+          src="https://www.benhviennhabe.vn/vnt_upload/weblink/72bc2d3a1107d0598916_1.jpg"
+          alt=""
+          className="w-full h-full"
+        />
       </div>
+
       <div className="md:w-2/6 p-4 w-full ">
         <h1 className="text-center font-bold mb-4 text-2xl">
           ĐĂNG NHẬP TÀI KHOẢN

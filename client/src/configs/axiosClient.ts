@@ -9,12 +9,15 @@ const AxiosConfig = axios.create({
 
 AxiosConfig.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem("persist:auth")
-    //   ? JSON.parse(localStorage.getItem("persist:auth")).token.slice(1, -1)
-    //   : null;
-    // if (token) {
-    //   config.headers["Authorization"] = `Bearer ${token}`;
-    // }
+    const token = localStorage.getItem("persist:auth")
+      ? JSON.parse(localStorage.getItem("persist:auth") || "").token.slice(
+          1,
+          -1
+        )
+      : null;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -27,10 +30,10 @@ AxiosConfig.interceptors.response.use(
     return response;
   },
   (error) => {
-    // if (error.response.status === 401 || error.response.status === 403) {
-    //   localStorage.removeItem("persist:auth");
-    //   window.location.href = "/login";
-    // }
+    if (error.response.status === 401 || error.response.status === 403) {
+      localStorage.removeItem("persist:auth");
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );
