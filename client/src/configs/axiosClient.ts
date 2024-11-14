@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AxiosConfig = axios.create({
   baseURL: `${import.meta.env.VITE_REACT_APP_API_URL}`,
@@ -33,6 +35,7 @@ AxiosConfig.interceptors.response.use(
     if (error.response.status === 401 || error.response.status === 403) {
       localStorage.removeItem("persist:auth");
       window.location.href = "/login";
+      alert("bạn cần đăng nhập");
     }
     return Promise.reject(error);
   }

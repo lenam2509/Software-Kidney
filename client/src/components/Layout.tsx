@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  HomeFilled,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -16,12 +15,13 @@ import {
   theme,
   Typography,
 } from "antd";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import AxiosConfig from "../configs/axiosClient";
 import Swal from "sweetalert2";
 
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { logout } from "../redux/reducers/authSlice";
+import { adminLinks, userLinks } from "../varibles/links";
 
 const { Header, Sider, Content } = Layout;
 
@@ -59,6 +59,14 @@ const AppLayout: React.FC = () => {
     },
   ];
 
+  let itemsLinks;
+  if (user.role == "user") {
+    itemsLinks = userLinks;
+  }
+  if (user.role == "admin") {
+    itemsLinks = adminLinks;
+  }
+
   useEffect(() => {
     if (!isAuth || !localStorage.getItem("persist:auth")) {
       Swal.fire({
@@ -74,22 +82,7 @@ const AppLayout: React.FC = () => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          items={[
-            {
-              key: "1",
-              icon: <HomeFilled />,
-              label: <Link to={"/"}>Trang chủ</Link>,
-            },
-            {
-              key: "2",
-              icon: <UserOutlined />,
-              label: <Link to={"/users"}>Quản lý tài khoản</Link>,
-            },
-          ]}
-        />
+        <Menu theme="dark" mode="inline" items={itemsLinks} />
       </Sider>
       <Layout>
         <Header

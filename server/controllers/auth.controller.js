@@ -56,7 +56,7 @@ exports.login = async function (req, res) {
                 return res.status(400).json({ message: 'Email hoặc mật khẩu sai' });
             }
             // Create token
-            const token = jwt.sign({ id: results[0].id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign({ id: results[0].id }, process.env.JWT_SECRET);
             // Send token in HTTP-only cookie
             res.cookie('token', token, {
                 httpOnly: true,
@@ -75,6 +75,7 @@ exports.login = async function (req, res) {
 // logout
 
 exports.logout = async function (req, res) {
+    console.log('user id: ' + req.user.id + ' has log out')
     try {
         res.clearCookie('token');
         return res.status(200).json({ message: 'Đăng xuất thành công' });
