@@ -63,6 +63,7 @@ exports.login = async function (req, res) {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'none'
             });
+            console.log('user id ' + results[0].id + ' has log in')
             return res.status(200).json({ message: 'Đăng nhập thành công', token: token, user: { id: results[0].id, email: results[0].email, role: results[0].role } });
         });
     } catch (error) {
@@ -75,7 +76,7 @@ exports.login = async function (req, res) {
 // logout
 
 exports.logout = async function (req, res) {
-    console.log('user id: ' + req.user.id + ' has log out')
+    console.log('user id ' + req.user.id + ' has log out')
     try {
         res.clearCookie('token');
         return res.status(200).json({ message: 'Đăng xuất thành công' });
